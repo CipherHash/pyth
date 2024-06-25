@@ -1,0 +1,41 @@
+import requests
+import json
+
+# URL to fetch data from the Aptos blockchain (adjust as necessary)
+APTOS_NODE_URL = "https://fullnode.devnet.aptoslabs.com/v1"
+
+# Example Pyth price feed ID (you need to get the correct IDs from Pyth documentation)
+PRICE_FEED_ID = "0xYOUR_PYTH_PRICE_FEED_ID"
+
+def get_pyth_price_feed(price_feed_id):
+    # Construct the URL for the contract call
+    url = f"{APTOS_NODE_URL}/transactions/by_version/{price_feed_id}"
+    
+    # Make the HTTP request to fetch the data
+    response = requests.get(url)
+    
+    # Check if the request was successful
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch data: {response.text}")
+    
+    # Parse the JSON response
+    data = response.json()
+    
+    # Extract the price information (adjust according to the actual response structure)
+    price_info = data.get("price_feed_data", {})
+    
+    return price_info
+
+def main():
+    try:
+        # Fetch and parse the Pyth price feed data
+        price_feed_data = get_pyth_price_feed(PRICE_FEED_ID)
+        
+        # Display the price feed data
+        print(json.dumps(price_feed_data, indent=2))
+        
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()
